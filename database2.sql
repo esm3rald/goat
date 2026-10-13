@@ -80,7 +80,7 @@ INSERT INTO Loans (reader_id, book_isbn, issue_date, due_date, actual_return_dat
 (4, '978-5-17-118366-8', '2026-07-01', '2026-07-15', '2026-07-14');
 
 --№4
-UPDATE Readers SET phone = '+7-978-228-13-37' WHERE full_name = 'Олег Васильев';
+UPDATE Readers SET phone = '+7-978-228-13-37' WHERE full_name = 'Мария Ким';
 UPDATE Loans SET actual_return_date = '2026-09-21' WHERE loan_id = 5;
 INSERT INTO Readers (full_name, phone) VALUES ('Денис Михайлов', '+7-922-666-66-22');
 DELETE FROM Readers WHERE full_name = 'Денис Михайлов';
