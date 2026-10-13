@@ -90,7 +90,7 @@ INSERT INTO Loans (reader_id, book_isbn, issue_date, due_date, actual_return_dat
 -- 6. Олег Васильев взял Мастера и Маргариту и ВЕРНУЛ БОЖЕШЬ ТЫ МОЙ
 (4, '978-5-17-118366-8', '2026-07-01', '2026-07-15', '2026-07-14');
 
---#4
+--№4
 UPDATE Readers SET phone = '+7-908-228-14-88' WHERE full_name = 'Олег Васильев';
 UPDATE Loans SET actual_return_date '2026-09-21' WHERE loans_id = '5';
 INSERT INTO Readers (full_name, phone) VALUES ('Сергей Смирнов', '+7-900-777-66-55');
