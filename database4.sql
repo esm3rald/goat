@@ -1,4 +1,4 @@
-/
+
 -- Удаляем таблицы, если они существуют, чтобы избежать ошибок при повторном выполнении
 DROP TABLE IF EXISTS Order_Items;
 DROP TABLE IF EXISTS Orders;
@@ -72,4 +72,46 @@ INSERT INTO Order_Items (order_id, product_id, quantity, price_per_unit) VALUES
 (3, 3, 1, 25000.00),  -- Иван купил Кофемашину
 (4, 1, 1, 70000.00),  -- Алексей купил Смартфон
 (4, 5, 1, 4500.00);   -- и Фен
-/*
+
+--1
+SELECT c.full_name, o.order_date FROM customers c JOIN orders o ON c.customer_id = o.customer_id;
+
+--2
+SELECT c.full_name FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL;
+
+--3
+SELECT p.product_name, oi.quantity, oi.price_per_unit FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE o.order_id = 1;
+
+--4
+SELECT full_name FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE order_id IN (SELECT order_id FROM order_items WHERE product_id IN (SELECT product_id FROM products WHERE product_name = 'Смартфон')));
+
+--5
+SELECT product_name, price FROM products WHERE price > (SELECT AVG(price) FROM products);
+
+--6
+SELECT o.order_id, o.order_date FROM orders o WHERE EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id = o.order_id AND oi.price_per_unit > 100000);
+
+--7
+-- 1. Через LEFT JOIN:
+SELECT c.full_name FROM customers c LEFT JOIN (SELECT o.customer_id FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE p.product_name = 'Ноутбук') nb ON c.customer_id = nb.customer_id WHERE nb.customer_id IS NULL;
+-- 2. Через NOT IN:
+SELECT full_name FROM customers WHERE customer_id NOT IN (SELECT o.customer_id FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE p.product_name = 'Ноутбук');
+
+--8
+-- Через LEFT JOIN:
+SELECT p.product_name FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id WHERE oi.product_id IS NULL;
+
+--9
+SELECT c.full_name, p.product_name, oi.quantity FROM customers c FULL OUTER JOIN orders o ON c.customer_id = o.customer_id FULL OUTER JOIN order_items oi ON o.order_id = oi.order_id FULL OUTER JOIN products p ON oi.product_id = p.product_id;
+
+--10
+-- 1. JOIN:
+SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON c.customer_id = o.customer_id JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE p.price = (SELECT MAX(price) FROM products);
+-- 2. Только подзапросы:
+SELECT full_name FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE order_id IN (SELECT order_id FROM order_items WHERE product_id IN (SELECT product_id FROM products WHERE price = (SELECT MAX(price) FROM products))));
+
+--11
+SELECT DISTINCT c.full_name, p.category FROM customers c CROSS JOIN products p;
+
+--12
+SELECT c1.full_name AS new_customer, c2.full_name AS recommended_by FROM customers c1 JOIN customers c2 ON c1.recommended_by = c2.customer_id;
